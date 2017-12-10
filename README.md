@@ -1,4 +1,6 @@
 # docker-observium
+A set of containers to run Obersium in Docker. Uses Træfik reverse proxy and Ofelia for easy cron job scheduling. RRD files will be peristed and preserved in a named Docker volume.
+
 ## Requirements
 - Docker in a x86_64 environment
 - docker-compose
@@ -41,4 +43,4 @@ OnHostRule = true
 ## Generate default config
 Use the provided ```generate-config.sh``` shell script to generate a default configuration file for docker-observium and edit the admin password and domain name before you start the containers. 
 ## Running the containers
-A simple ```docker-compose up -d``` will download all referenced images, build the Observium container and run it in the background. Check the container logs for errors and don't forget to check Træfik's log as well. If everything is up & running, you should be able to log in to docker-observium using the admin user and the password in docker-observium.conf.
+A simple ```docker-compose up -d``` will download all referenced images, build the Observium container and run it in the background. Check the container logs for errors and don't forget to check Træfik's log as well. If everything is up & running, you should be able to log in to Observium using the admin user and the password in docker-observium.conf.
