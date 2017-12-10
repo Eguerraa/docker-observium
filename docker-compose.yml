@@ -1,0 +1,77 @@
+version: '2.3'
+
+services:
+  mysql:
+    image: mariadb:10.2
+    container_name: mysql
+    command: mysqld --max_allowed_packet=192M --max-connections=1500 --innodb-strict-mode=0 --skip-host-cache --skip-name-resolve --log-warnings=0
+    healthcheck:
+      test: ["CMD", "mysql", "-u$DBUSER", "-p$DBPASS", "-e", "SHOW DATABASES;", "-h", "localhost"]
+      interval: 1s
+      timeout: 1s
+      retries: 99
+    volumes:
+      - mysql-vol:/var/lib/mysql/
+      - ./conf/mysql/:/etc/mysql/conf.d/:ro
+    environment:
+      - MYSQL_ROOT_PASSWORD=${DBROOT}
+      - MYSQL_DATABASE=${DBNAME}
+      - MYSQL_USER=${DBUSER}
+      - MYSQL_PASSWORD=${DBPASS}
+    init: true
+    restart: unless-stopped
+
+  observium:
+    image: observium
+    container_name: observium
+    build:
+      context: .
+    environment:
+      - MYSQL_ROOT_PASSWORD=${DBROOT}
+      - MYSQL_DATABASE=${DBNAME}
+      - MYSQL_USER=${DBUSER}
+      - MYSQL_PASSWORD=${DBPASS}
+      - OBSERVIUM_ADMIN_PASSWORD=${ADMPASS}
+    healthcheck:
+      test: ["CMD", "curl", "http://localhost"]
+      interval: 1s
+      timeout: 1s
+      retries: 99
+    init: true
+    depends_on:
+       mysql:
+         condition: service_healthy
+    volumes: 
+      - observium-data:/data
+    expose:
+      - "80"
+    labels:
+      - "traefik.backend=observium"
+      - "traefik.docker.network=web"
+      - "traefik.frontend.rule=Host:${DOMAIN}"
+      - "traefik.enable=true"
+      - "traefik.port=80"
+      - "traefik.default.protocol=http"
+    networks:
+      - web
+      - default
+    restart: unless-stopped
+
+  scheduler:
+    image: mcuadros/ofelia:latest
+    volumes:
+      - ./conf/cron:/etc/ofelia
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+       observium:  
+         condition: service_healthy
+    restart: unless-stopped
+
+
+volumes:
+  mysql-vol:
+  observium-data:
+
+networks:
+  web:
+    external: true
