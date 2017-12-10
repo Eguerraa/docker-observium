@@ -41,6 +41,6 @@ OnHostRule = true
 ```
 
 ## Generate default config
-Use the provided ```generate-config.sh``` shell script to generate a default configuration file for docker-observium and edit the admin password and domain name before you start the containers. 
+Use the provided ```generate-config.sh``` shell script to generate a default configuration file for docker-observium and edit the admin password and domain name in the generated ```docker-observium.conf``` before you start the containers. 
 ## Running the containers
 A simple ```docker-compose up -d``` will download all referenced images, build the Observium container and run it in the background. Check the container logs for errors and don't forget to check Træfik's log as well. If everything is up & running, you should be able to log in to Observium using the admin user and the password in docker-observium.conf.
