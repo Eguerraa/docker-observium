@@ -1,5 +1,5 @@
 # docker-observium
-A set of containers to run Observium in Docker. Uses Træfik reverse proxy and Ofelia for easy cron job scheduling. RRD files will be peristed and preserved in a named Docker volume.
+A set of containers to run Observium in Docker. Uses Træfik reverse proxy and Ofelia for easy cron job scheduling. RRD files will be persisted and preserved in a named Docker volume.
 
 ## Requirements
 - Docker in a x86_64 environment
