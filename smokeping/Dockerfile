@@ -10,8 +10,7 @@ RUN \
     && rm -rf /var/lib/apt/lists/*
 
 RUN mkdir -p /var/run/smokeping \
-    && chown smokeping:smokeping /var/run/smokeping \
-    && mkfifo -m 0660 /tmp/log
+    && chown smokeping:smokeping /var/run/smokeping
 
 COPY smokeping.sh /
 CMD ["/smokeping.sh"]
