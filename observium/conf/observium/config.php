@@ -5,8 +5,10 @@ $config['db_user']      = getenv('OBSERVIUM_DB_USER');
 $config['db_pass']      = getenv('OBSERVIUM_DB_PASSWORD');
 $config['db_name']      = getenv('OBSERVIUM_DB_NAME');
 
-$config['rrd_dir']               = '/data/rrd';
-$config['smokeping']['dir']      = '/var/lib/smokeping/';
+$config['rrd_dir']          = '/data/rrd';
+$config['smokeping']['dir'] = '/var/lib/smokeping/';
+
+$config['web_url'] = 'https://' . getenv('DOMAIN');
 
 $config['email']['smtp_host']    = 'smtp';
 $config['email']['from']         = getenv('EMAIL_FROM');
