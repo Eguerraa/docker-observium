@@ -16,7 +16,7 @@ services:
     container_name: mysql
     command: mysqld --max_allowed_packet=192M --max-connections=1500 --innodb-strict-mode=0 --skip-host-cache --skip-name-resolve --log-warnings=0
     healthcheck:
-      test: ["CMD", "mysql", "-u$DBUSER", "-p$DBPASS", "-e", "SHOW DATABASES;", "-h", "localhost"]
+      test: ["CMD", "mysql", "-u${OBSERVIUM_DB_USER}", "-p${OBSERVIUM_DB_PASSWORD}", "-e", "SHOW DATABASES;", "-h", "localhost"]
       interval: 1s
       timeout: 1s
       retries: 99
@@ -24,10 +24,10 @@ services:
       - mysql-data:/var/lib/mysql/
       - ./observium/conf/mysql/:/etc/mysql/conf.d/:ro
     environment:
-      - MYSQL_ROOT_PASSWORD=${DBROOT}
-      - MYSQL_DATABASE=${DBNAME}
-      - MYSQL_USER=${DBUSER}
-      - MYSQL_PASSWORD=${DBPASS}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${OBSERVIUM_DB_NAME}
+      - MYSQL_USER=${OBSERVIUM_DB_USER}
+      - MYSQL_PASSWORD=${OBSERVIUM_DB_PASSWORD}
     init: true
     restart: unless-stopped
 
@@ -37,11 +37,15 @@ services:
     build:
       context: ./observium
     environment:
-      - MYSQL_ROOT_PASSWORD=${DBROOT}
-      - MYSQL_DATABASE=${DBNAME}
-      - MYSQL_USER=${DBUSER}
-      - MYSQL_PASSWORD=${DBPASS}
-      - OBSERVIUM_ADMIN_PASSWORD=${ADMPASS}
+      - OBSERVIUM_DB_NAME=${OBSERVIUM_DB_NAME}
+      - OBSERVIUM_DB_USER=${OBSERVIUM_DB_USER}
+      - OBSERVIUM_DB_PASSWORD=${OBSERVIUM_DB_PASSWORD}
+      - OBSERVIUM_ADMIN_PASSWORD=${OBSERVIUM_ADMIN_PASSWORD}
+      - EMAIL_ENABLE=${EMAIL_ENABLE}
+      - EMAIL_FROM=${EMAIL_FROM}
+      - EMAIL_DEFAULT_RECIPIENT=${EMAIL_DEFAULT_RECIPIENT}
+      - EMAIL_DEFAULT_RECIPIENT_ONLY=${EMAIL_DEFAULT_RECIPIENT_ONLY}
+
     healthcheck:
       test: ["CMD", "curl", "http://localhost"]
       interval: 1s
@@ -77,6 +81,19 @@ services:
        observium:  
          condition: service_healthy
     restart: unless-stopped
+
+  smtp:
+    image: namshi/smtp:latest
+    conntainer_name: smtp
+    build:
+      context: ./smtp
+    expose:
+      - "25"
+    environment:
+      - SMARTHOST_ADDRESS=${SMARTHOST_ADDRESS}
+      - SMARTHOST_PORT=${SMARTHOST_PORT}
+      - SMARTHOST_USER=${SMARTHOST_USER}
+      - SMARTHOST_PASSWORD=${SMARTHOST_PASSWORD}
 
 volumes:
   mysql-data:
