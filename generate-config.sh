@@ -48,7 +48,7 @@ SMARTHOST_PORT=587
 SMARTHOST_USER=myuser
 SMARTHOST_PASSWORD=secret
 
-EMAIL_FROM=observium@example.tld
+EMAIL_FROM=Observium <observium@example.tld>
 
 # Set this to TRUE if you want to send all Observium emails to the address specified below. When FALSE, 
 # alert emails will be sent to the address in the SNMP contact information received from the queried host.

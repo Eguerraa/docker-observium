@@ -37,6 +37,7 @@ services:
     build:
       context: ./observium
     environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - OBSERVIUM_DB_NAME=${OBSERVIUM_DB_NAME}
       - OBSERVIUM_DB_USER=${OBSERVIUM_DB_USER}
       - OBSERVIUM_DB_PASSWORD=${OBSERVIUM_DB_PASSWORD}
@@ -84,9 +85,10 @@ services:
 
   smtp:
     image: namshi/smtp:latest
-    conntainer_name: smtp
+    container_name: smtp
     build:
       context: ./smtp
+    hostname: ${DOMAIN}
     expose:
       - "25"
     environment:
